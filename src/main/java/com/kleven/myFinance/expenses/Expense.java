@@ -6,8 +6,11 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Table(name = "expenses")
 @Entity(name = "Expense")
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -16,13 +19,39 @@ public class Expense {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String description;
+
+    @Column(nullable = false)
+    private String detailing;
+    @Column(nullable = false)
     private String amount;
-    private String date;
+
+    @Temporal(TemporalType.DATE)
+    @Column(nullable = false)
+    private Date expensesDate;
+
+    private boolean active;
 
     public Expense(DataRegisterExpenses expenses){
-        this.description = expenses.description();
+        this.active = true;
+        this.detailing = expenses.detailing();
         this.amount = expenses.amount();
-        this.date = expenses.date();
+        this.expensesDate = expenses.expensesDate();
     }
+
+    public void update(DataToUpdateExpenses data){
+        if(data.detailing() != null){
+            this.detailing = data.detailing();
+        }
+        if(data.amount() != null){
+            this.amount = data.amount();
+        }
+        if(data.expensesDate() != null){
+            this.expensesDate = data.expensesDate();
+        }
+    }
+
+    public void delete(){
+        this.active = false;
+    }
+
 }
